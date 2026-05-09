@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"mime"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
-func encryptFile(filepath, password string) error {
-	splitFile := strings.Split(filepath, ".")
+func encryptFile(filePath, password string) error {
+	splitFile := strings.Split(filePath, ".")
 	extension := splitFile[len(splitFile)-1]
 
 	if len(extension) > 4 {
@@ -22,7 +23,7 @@ func encryptFile(filepath, password string) error {
 		return fmt.Errorf("Invalid file type: Can only process text files")
 	}
 
-	file, err := os.ReadFile(filepath)
+	file, err := os.ReadFile(filepath.Clean(splitFile[0]))
 	if err != nil {
 		return fmt.Errorf("Error reading file: %v", err)
 	}
@@ -32,7 +33,7 @@ func encryptFile(filepath, password string) error {
 		return fmt.Errorf("Error encrypting file: %v", err)
 	}
 
-	newFile, err := os.Create(splitFile[0] + ".bin")
+	newFile, err := os.Create(filepath.Clean(splitFile[0]) + ".bin")
 	if err != nil {
 		return fmt.Errorf("Error creating encrypted file: %v", err)
 	}
@@ -42,10 +43,22 @@ func encryptFile(filepath, password string) error {
 		extension += " "
 	}
 
-	newFile.Write([]byte(extension))
-	newFile.Write(nonce)
-	newFile.Write(salt)
-	newFile.Write(ciphertext)
+	_, err = newFile.Write([]byte(extension))
+	if err != nil {
+		return fmt.Errorf("Error writing extension: %v", err)
+	}
+	_, err = newFile.Write(nonce)
+	if err != nil {
+		return fmt.Errorf("Error writing nonce: %v", err)
+	}
+	_, err = newFile.Write(salt)
+	if err != nil {
+		return fmt.Errorf("Error writing salt: %v", err)
+	}
+	_, err = newFile.Write(ciphertext)
+	if err != nil {
+		return fmt.Errorf("Error writing ciphertext: %v", err)
+	}
 
 	fmt.Println("Success!")
 

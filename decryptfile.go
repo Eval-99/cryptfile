@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
-func decryptFile(filepath, password string) error {
-	file, err := os.ReadFile(filepath)
+func decryptFile(filePath, password string) error {
+	file, err := os.ReadFile(filepath.Clean(filePath))
 	if err != nil {
 		return fmt.Errorf("Error reading file: %v", err)
 	}
@@ -21,15 +22,18 @@ func decryptFile(filepath, password string) error {
 		return fmt.Errorf("Error decrypting file: %v", err)
 	}
 
-	splitFile := strings.Split(filepath, ".")
+	splitFile := strings.Split(filePath, ".")
 
-	decryptedFile, err := os.Create(splitFile[0] + "-decrypted" + "." + strings.TrimSpace(string(extension)))
+	decryptedFile, err := os.Create(filepath.Clean(splitFile[0]) + "-decrypted" + "." + strings.TrimSpace(filepath.Clean(string(extension))))
 	if err != nil {
 		return fmt.Errorf("Error creating encrypted file: %v", err)
 	}
 	defer decryptedFile.Close()
 
-	decryptedFile.Write(plain)
+	_, err = decryptedFile.Write(plain)
+	if err != nil {
+		return fmt.Errorf("Error writing plain text to file: %v", err)
+	}
 
 	fmt.Println("Success!")
 

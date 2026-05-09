@@ -22,23 +22,23 @@ Example:
 	}
 
 	if len(commandArgs) != 4 {
-		fmt.Println("Must have \"{encrypt/decrypt} {filepath} {password}\" to use. See \"help\" command.")
+		fmt.Println("Must have \"{encrypt/decrypt} {filePath} {password}\" to use. See \"help\" command.")
 		return
 	}
 
 	action := commandArgs[1]
-	filepath := commandArgs[2]
+	filePath := commandArgs[2]
 	password := commandArgs[3]
 
 	switch action {
 	case "encrypt":
-		err := encryptFile(filepath, password)
+		err := encryptFile(filePath, password)
 		if err != nil {
 			fmt.Println(err)
 		}
 
 	case "decrypt":
-		err := decryptFile(filepath, password)
+		err := decryptFile(filePath, password)
 		if err != nil {
 			fmt.Println(err)
 		}
