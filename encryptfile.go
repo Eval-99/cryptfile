@@ -23,7 +23,7 @@ func encryptFile(filePath, password string) error {
 		return fmt.Errorf("Invalid file type: Can only process text files")
 	}
 
-	file, err := os.ReadFile(filepath.Clean(splitFile[0]))
+	file, err := os.ReadFile(filepath.Clean(filePath))
 	if err != nil {
 		return fmt.Errorf("Error reading file: %v", err)
 	}
