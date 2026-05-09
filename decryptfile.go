@@ -7,9 +7,9 @@ import (
 )
 
 func decryptFile(filepath, password string) error {
-	file, err := os.ReadFile("./" + filepath)
+	file, err := os.ReadFile(filepath)
 	if err != nil {
-		return fmt.Errorf("Error reading file: %v\n", err)
+		return fmt.Errorf("Error reading file: %v", err)
 	}
 
 	extension := file[:4]
@@ -18,12 +18,14 @@ func decryptFile(filepath, password string) error {
 
 	plain, err := decrypt(key, file[32:], nonce)
 	if err != nil {
-		return fmt.Errorf("Error decrypting file: %v\n", err)
+		return fmt.Errorf("Error decrypting file: %v", err)
 	}
 
-	decryptedFile, err := os.Create("ThisOne" + "." + strings.TrimSpace(string(extension)))
+	splitFile := strings.Split(filepath, ".")
+
+	decryptedFile, err := os.Create(splitFile[0] + "-decrypted" + "." + strings.TrimSpace(string(extension)))
 	if err != nil {
-		return fmt.Errorf("Error creating encrypted file: %v\n", err)
+		return fmt.Errorf("Error creating encrypted file: %v", err)
 	}
 	defer decryptedFile.Close()
 

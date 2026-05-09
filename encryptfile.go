@@ -11,14 +11,18 @@ func encryptFile(filepath, password string) error {
 	splitFile := strings.Split(filepath, ".")
 	extension := splitFile[len(splitFile)-1]
 
+	if len(extension) > 4 {
+		return fmt.Errorf("File extension length must be at most 4 characters long")
+	}
+
 	nonce := generateNonce(12)
 	key, salt, err := hashPassword(password)
 
 	if !strings.HasPrefix(mime.TypeByExtension("."+extension), "text/") {
-		return fmt.Errorf("Invalid file type: Can only process text files\n")
+		return fmt.Errorf("Invalid file type: Can only process text files")
 	}
 
-	file, err := os.ReadFile("./" + filepath)
+	file, err := os.ReadFile(filepath)
 	if err != nil {
 		return fmt.Errorf("Error reading file: %v", err)
 	}

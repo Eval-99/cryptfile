@@ -20,8 +20,9 @@ Example:
 
 		return
 	}
+
 	if len(commandArgs) != 4 {
-		fmt.Println("Must have '{encrypt/decrypt} {filepath} {password}' to use")
+		fmt.Println("Must have \"{encrypt/decrypt} {filepath} {password}\" to use. See \"help\" command.")
 		return
 	}
 
@@ -42,6 +43,6 @@ Example:
 			fmt.Println(err)
 		}
 	default:
-		fmt.Println("Not a valid action: Must encrypt or decrypt")
+		fmt.Println("Not a valid action: Must be encrypt or decrypt")
 	}
 }
